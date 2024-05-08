@@ -41,3 +41,5 @@ npm init
 tsc --init
 
 npm install express nodemon body-parser cors ts-node-dev typescript @types/express @types/cors
+
+jsonwebtoken
