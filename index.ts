@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
 import { AdminRoute, VandorRoute } from "./routes";
+import { MONGO_URI } from "./config";
+import { connectDB } from "./db/connect";
 const app = express();
 
 app.use(bodyParser.json());
@@ -18,7 +20,15 @@ app.use("/vandor", VandorRoute);
 
 const port = process.env.PORT || 8000;
 
-app.listen(port, () => {
-  console.clear();
-  console.log(`App is listening on ${port}`);
-});
+const start = async () => {
+  try {
+    await connectDB(MONGO_URI);
+    app.listen(port, () => {
+      console.log(`App is listening on ${port}`);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+start();
