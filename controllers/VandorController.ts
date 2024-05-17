@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { EditVandorInputs, VandorLoginInputs } from "../dto";
+import { EditVandorInputs, VandorLoginInputs, CreateFoodInputs } from "../dto";
 import { FindVandor } from "./AdminController";
 import { GenerateSignature, ValidatePassword } from "../utility";
+import { Food } from "../models";
 
 export const VandorLogin = async (
   req: Request,
@@ -94,4 +95,83 @@ export const UpdateVandorService = async (
     return res.json(existingVandor);
   } else
     return res.status(404).json({ message: "Vandor information not found" });
+};
+
+export const UpdateVandorCoverImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+  if (user) {
+    const vandor = await FindVandor(user._id);
+
+    if (vandor !== null) {
+      const files = req.files as [Express.Multer.File];
+
+      const images = files.map((file: Express.Multer.File) => file.filename);
+
+      vandor.coverImages.push(...images);
+      const result = await vandor.save();
+
+      return res.json(result);
+    }
+  } else
+    return res
+      .status(500)
+      .json({ message: "Something went wring with add iamges" });
+};
+
+export const AddFood = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+  if (user) {
+    const { name, description, category, foodType, readyTime, price } = <
+      CreateFoodInputs
+    >req.body;
+
+    const vandor = await FindVandor(user._id);
+
+    if (vandor !== null) {
+      const files = req.files as [Express.Multer.File];
+
+      const images = files.map((file: Express.Multer.File) => file.filename);
+
+      const createdFood = await Food.create({
+        vandorId: vandor._id,
+        name: name,
+        description: description,
+        category: category,
+        foodType: foodType,
+        images: images,
+        readyTime: readyTime,
+        price: price,
+        rating: 0,
+      });
+
+      vandor.foods.push(createdFood);
+      const result = await vandor.save();
+
+      return res.json(result);
+    }
+  } else
+    return res
+      .status(500)
+      .json({ message: "Something went wring with add food" });
+};
+
+export const GetFood = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+  if (user) {
+    const foods = await Food.find({ vandorId: user._id });
+    if (foods !== null) return res.json(foods);
+  } else
+    return res.status(404).json({ message: "Foods information not found" });
 };
