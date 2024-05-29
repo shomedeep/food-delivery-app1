@@ -2,7 +2,7 @@ import express, { Application } from "express";
 import bodyParser from "body-parser";
 import path from "path";
 
-import { AdminRoute, VandorRoute } from "../routes";
+import { AdminRoute, VandorRoute, CustomerRoute } from "../routes";
 import { ShoppingRoute } from "../routes/ShoppingRoute";
 
 export default async (app: Application) => {
@@ -13,6 +13,7 @@ export default async (app: Application) => {
   app.use("/admin", AdminRoute);
   app.use("/vandor", VandorRoute);
   app.use("/shopping", ShoppingRoute);
+  app.use("/customer", CustomerRoute);
 
   return app;
 };

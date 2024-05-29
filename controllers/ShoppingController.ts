@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { FoodDoc, Vandor } from "../models";
-import async from "../services/ExpressApp";
 
 export const GetFoodAvailability = async (
   req: Request,
