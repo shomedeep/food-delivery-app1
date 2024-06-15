@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 // Email
 
 // notifications
@@ -12,17 +14,24 @@ export const GenerateOTP = () => {
 };
 
 export const onRequestOTP = async (otp: number, toPhoneNumber: string) => {
-  const accountSid = "";
-  const authToken = "";
-  const client = require("twilio")(accountSid, authToken);
+  try {
+    const accountSid = process.env.ACCOUNT_SID;
+    const authToken = process.env.AUTH_TOKEN;
 
-  const response = await client.message.create({
-    body: `Your OTP is ${otp}`,
-    from: "",
-    to: toPhoneNumber,
-  });
+    const client = require("twilio")(accountSid, authToken);
+    console.log(client, "client");
 
-  return response;
+    const response = await client.messages.create({
+      body: `Your OTP is ${otp}`,
+      from: process.env.PHONE_NUMBER,
+      to: `+91${toPhoneNumber}`,
+    });
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };
 
 // Payment notifications or emails
