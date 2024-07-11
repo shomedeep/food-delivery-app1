@@ -18,7 +18,6 @@ export interface VandorPayload {
   _id: string;
   email: string;
   name: string;
-  foodType: [string];
   // others
 }
 

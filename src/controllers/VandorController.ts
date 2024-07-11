@@ -26,7 +26,6 @@ export const VandorLogin = async (
         _id: existingVandor.id,
         email: existingVandor.email,
         name: existingVandor.name,
-        foodType: existingVandor.foodType,
       });
 
       return res.json({ bearer_access_token: signature });
